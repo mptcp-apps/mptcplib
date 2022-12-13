@@ -4,7 +4,7 @@ from ._interface import is_mptcp_enabled_and_supported
 from ._interface import create_mptcp_socket
 from ._interface import IPPROTO_MPTCP
     
-__version__ = "0.0.1"
+__version__ = "0.1.1"
 
 __all__ = [
     "socket_is_mptcp", 

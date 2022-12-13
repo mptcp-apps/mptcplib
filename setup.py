@@ -29,7 +29,7 @@ Operating System :: POSIX :: Linux
 
 setup(
     name="mptcplib", 
-    version="0.0.1", 
+    version="0.1.1", 
     description="A Multipath TCP python support library",
     ext_modules=[linux_modules],
     packages=['mptcplib'],

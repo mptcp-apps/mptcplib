@@ -52,7 +52,6 @@ test-coverage:
 pre-release: clean dev
 	$(PYTHON) setup.py sdist
  
-
 release: pre-release
 	$(PYTHON) -m twine check --strict dist/*
 	$(PYTHON) -m twine upload dist/*
