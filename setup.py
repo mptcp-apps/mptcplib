@@ -7,7 +7,7 @@ long_description = ""
 with open('README.md') as file:
     long_description = file.read()
 
-CLASSIFIERS = """\
+CLASSIFIERS = """
 Development Status :: 1 - Planning
 License :: OSI Approved :: MIT License
 Programming Language :: C
@@ -39,6 +39,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     platforms=["Linux"], 
+    classifiers=CLASSIFIERS,
     python_requires='>=3.7', 
     url="https://github.com/mptcp-apps/mptcplib"
 )

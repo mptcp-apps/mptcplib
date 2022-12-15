@@ -48,6 +48,7 @@ Cused_subflows(int sockfd)
 			return inf.mptcpi_subflows;
 		} else {
 			PyErr_Format(Mptcplib_Error, "The socket getsockopt returned %d", errno);
+			return NULL;
 		}
 	}
 	return MPTCPLIB_SOCKET_FALLBACK_TCP;
@@ -64,9 +65,6 @@ static PyObject* used_subflows(PyObject* self, PyObject* args)
 	int value_returned = Cused_subflows(sockfd);
 	if (value_returned != MPTCPLIB_ERROR_FLAG){
 		return Py_BuildValue("i", value_returned);
-	} else if (value_returned == MPTCPLIB_ERROR_FLAG){
-		PyErr_Format(Mptcplib_Error, "getseckopt returned errno with code %d.", errno);
-		return NULL;
 	} else {
 		return Py_BuildValue("i", value_returned);
 	}
