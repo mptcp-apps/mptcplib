@@ -29,6 +29,11 @@ class MPTCPLibDataTransfer(unittest.TestCase):
             with conn:
                 recv_text   = conn.recv(text_length).decode()
             self.assertEqual(random_text, recv_text)  
+            try:
+                self.assertGreaterEqual(1, mptcplib.used_subflows(sock_client.fileno())) 
+                self.assertGreaterEqual(1, mptcplib.used_subflows(sock_server.fileno()))
+            except NotImplementedError as e:
+                pass 
         finally:
             sock_client.close()
             sock_client.close()
@@ -44,7 +49,12 @@ class MPTCPLibDataTransfer(unittest.TestCase):
             conn, _ = sock_server.accept()
             with conn:
                 recv_text   = conn.recv(text_length).decode()
-            self.assertEqual(random_text, recv_text)            
+            self.assertEqual(random_text, recv_text)    
+            try:
+                self.assertGreaterEqual(1, mptcplib.used_subflows(sock_client.fileno())) 
+                self.assertGreaterEqual(1, mptcplib.used_subflows(sock_server.fileno()))
+            except NotImplementedError as e:
+                pass        
         finally:
             sock_client.close()
             sock_client.close()

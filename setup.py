@@ -7,7 +7,7 @@ long_description = ""
 with open('README.md') as file:
     long_description = file.read()
 
-CLASSIFIERS = """
+CLASSIFIERS = """\
 Development Status :: 1 - Planning
 License :: OSI Approved :: MIT License
 Programming Language :: C

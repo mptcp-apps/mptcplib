@@ -1,6 +1,8 @@
 #include <Python.h>
 #include "_mptcplib_linux.h"
 #include <errno.h>
+#include <string.h>
+
 
 static PyObject *Mptcplib_Error;
 
@@ -41,15 +43,15 @@ Cused_subflows(int sockfd)
 {
 	int socket_is_mptcp_returned = Csocket_is_mptcp(sockfd);
 	if ( socket_is_mptcp_returned == 0 ){
-		struct mptcp_info inf;
-		socklen_t optlen;
-		optlen = sizeof(inf);
-		if (!getsockopt(sockfd, SOL_MPTCP, MPTCP_INFO, &inf, &optlen)) {
-			return inf.mptcpi_subflows;
-		} else {
-			PyErr_Format(Mptcplib_Error, "The socket getsockopt returned %d", errno);
-			return NULL;
+		struct mptcp_subflow_data inf;
+		memset(&inf, 0, sizeof(inf));
+		inf.size_subflow_data = sizeof(struct mptcp_subflow_data);
+		inf.size_user = 0;	/* https://github.com/multipath-tcp/mptcp_net-next/issues/327#issuecomment-1353253798 */
+		socklen_t optlen = sizeof(inf);
+		if (getsockopt(sockfd, SOL_MPTCP, MPTCP_TCPINFO, &inf, &optlen) < 0) {
+			return MPTCPLIB_ERROR_FLAG;
 		}
+		return inf.num_subflows;
 	}
 	return MPTCPLIB_SOCKET_FALLBACK_TCP;
 }
@@ -63,9 +65,12 @@ static PyObject* used_subflows(PyObject* self, PyObject* args)
 		return NULL;
 	}								
 	int value_returned = Cused_subflows(sockfd);
-	if (value_returned != MPTCPLIB_ERROR_FLAG){
+	if (value_returned >= 0){
 		return Py_BuildValue("i", value_returned);
-	} else {
+	} else if (value_returned == MPTCPLIB_ERROR_FLAG) {
+		PyErr_Format(Mptcplib_Error, "The socket getsockopt returned %d", errno);
+		return NULL;
+	} else if (value_returned == MPTCPLIB_SOCKET_FALLBACK_TCP){
 		return Py_BuildValue("i", value_returned);
 	}
 }

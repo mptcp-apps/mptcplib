@@ -15,8 +15,18 @@
 #define MPTCPLIB_SOCKET_FALLBACK_TCP -1
 #define MPTCPLIB_ERROR_FLAG -3
 
-#ifndef MPTCP_INFO
-#define MPTCP_INFO 1
+#ifndef _UAPI_MPTCP_H
+
+#define MPTCP_INFO 		1
+#define MPTCP_TCPINFO	2
+
+struct mptcp_subflow_data {
+	__u32		size_subflow_data;		/* size of this structure in userspace */
+	__u32		num_subflows;			/* must be 0, set by kernel */
+	__u32		size_kernel;			/* must be 0, set by kernel */
+	__u32		size_user;			/* size of one element in data[] */
+} __attribute__((aligned(8)));
+
 struct mptcp_info {
 	__u8	mptcpi_subflows;
 	__u8	mptcpi_add_addr_signal;
