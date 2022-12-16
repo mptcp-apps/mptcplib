@@ -25,7 +25,7 @@ def used_subflows(fd: int) -> int:
     :type fd: int
     :raises mptcplib.error: Indicating the errno code.
     :raises NotImplementedError: If the operation is not supported on the host OS.
-    :return: -1 if fallback to TCP, -2 if the operation isn't supported else the number of used subflows.
+    :return: -1 if fallback to TCP, else the number of used subflows.
     :rtype: int
     """
     ...
