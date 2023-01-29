@@ -3,7 +3,6 @@
 #include <errno.h>
 #include <string.h>
 
-
 static PyObject *Mptcplib_Error;
 
 /* Patch from https://github.com/multipath-tcp/mptcp_net-next/issues/294#issuecomment-1301920288 */

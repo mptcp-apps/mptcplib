@@ -3,7 +3,9 @@
 ![tests](https://github.com/mptcp-apps/mptcplib/actions/workflows/tests.yaml/badge.svg)
 
 ## About
-A Multipath TCP Python extension module. The core of this library is written in C in order to provide support for Multipath TCP in Python faster than standard CPython. For a deeper read about Multipath TCP, please consult this [webpage](https://obonaventure.github.io/mmtp-book/).
+A Multipath TCP Python extension module. Since the library is still new, our API may change therefore we encourage users to activate the github watch in order to keep up with the changes. 
+
+For a deeper read about Multipath TCP, please consult this [webpage](https://obonaventure.github.io/mmtp-book/).
 
 ## Table of content
 

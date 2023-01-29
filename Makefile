@@ -42,7 +42,7 @@ dev-build:
 
 test:
 	pip3 install -q pytest
-	pytest ./mptcplib/test/ -v
+	pytest ./mptcplib/test/ -v -s
 
 test-coverage:
 	pip3 install -q pytest-cov pytest-xdist
