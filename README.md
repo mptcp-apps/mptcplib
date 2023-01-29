@@ -27,7 +27,7 @@ import mptcplib
 
 with mptcplib.create_mptcp_socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     ... # Do other things
-    if mptcplib.socket_is_mptcp(sock.fileno()):
+    if mptcplib.socket_is_mptcp(sock):
         ... # Do things for MPTCP socket
     else:
         ... # Falled back to TCP

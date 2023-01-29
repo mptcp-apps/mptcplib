@@ -1,7 +1,6 @@
 """ Interface module
 Servers as the interface of the user. 
 """
-
 from sys import platform
 import socket
 
@@ -10,16 +9,29 @@ try:
 except AttributeError:
     IPPROTO_MPTCP = 262
 
+try:
+    SOL_MPTCP = socket.SOL_MPTCP
+except AttributeError:
+    SOL_MPTCP = 284
+
+try: 
+    MPTCP_INFO = socket.MPTCP_INFO
+except AttributeError:
+    MPTCP_INFO = 1
+
 _os_supports_mptcp = True
 
 IS_LINUX = platform.startswith("linux")
 
 from . import _mptcplib_linux as ext_linux
 from ._utils import _linux_required_kernel, _linux_get_sysfs_variable
+from ._mptcplib_structs import *
 
-def socket_is_mptcp(sockfd):
+def socket_is_mptcp(sock: socket.socket):
     if IS_LINUX and _linux_required_kernel("5.16"):
-        return ext_linux.socket_is_mptcp(sockfd) == 0 
+        return_bytes = sock.getsockopt(SOL_MPTCP, MPTCP_INFO, BooleanStruct.size())
+        return BooleanStruct.decode(return_bytes).value
+
     # If it reaches then the operation is not supported on the Host OS
     raise NotImplementedError("The operation is not supported on your OS.")
 

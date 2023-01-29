@@ -21,6 +21,8 @@ class MPTCPLibDataTransfer(unittest.TestCase):
     def test_mptcp_transfer_ipv4(self):
         sock_client, sock_server = _client_server_pair(socket.AF_INET, socket.SOCK_STREAM)
         try:
+            self.assertTrue(mptcplib.socket_is_mptcp(sock_client))
+            self.assertTrue(mptcplib.socket_is_mptcp(sock_server))
             sock_client.connect(sock_server.getsockname())
             text_length = 1024
             random_text = "".join(random.choice(string.ascii_letters) for _ in range(text_length))
@@ -42,6 +44,8 @@ class MPTCPLibDataTransfer(unittest.TestCase):
     def test_mptcp_transfer_ipv6(self):
         sock_client, sock_server = _client_server_pair(socket.AF_INET, socket.SOCK_STREAM)
         try:
+            self.assertTrue(mptcplib.socket_is_mptcp(sock_client))
+            self.assertTrue(mptcplib.socket_is_mptcp(sock_server))
             sock_client.connect(sock_server.getsockname())
             text_length = 1024
             random_text = "".join(random.choice(string.ascii_letters) for _ in range(text_length))
