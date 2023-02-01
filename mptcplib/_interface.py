@@ -1,5 +1,4 @@
 """ Interface module
-Servers as the interface of the user. 
 """
 from sys import platform
 import socket
@@ -8,12 +7,11 @@ import errno
 _os_supports_mptcp = True
 IS_LINUX = platform.startswith("linux") or platform == "linux2" 
 
-from . import _mptcplib_linux as ext_linux
+from ._common_utils import _linux_required_kernel, _linux_get_sysfs_variable
+from ._common_constants import *
+from ._mptcplib_linux import _linux_get_nb_used_subflows, SOL_MPTCP, MPTCP_INFO
 
-from ._utils import _linux_required_kernel, _linux_get_sysfs_variable
-from ._mptcplib_structs import *
-
-def socket_is_mptcp(sock: socket.socket):
+def is_socket_mptcp(sock: socket.socket):
     if IS_LINUX and _linux_required_kernel("5.16"):
         if not _is_mptcp_enabled():
             return False
@@ -31,12 +29,12 @@ def socket_is_mptcp(sock: socket.socket):
     # If it reaches here then the operation is not supported on the host OS
     raise NotImplementedError("The operation is not supported on your OS.")
 
-def used_subflows(sock: socket.socket):
+def get_nb_used_subflows(sock: socket.socket):
     if IS_LINUX and _linux_required_kernel("5.16"):
-        if not socket_is_mptcp(sock):
+        if not is_socket_mptcp(sock):
             return -1
-        subflow_data: MptcpSubflowDataStruct = MptcpSubflowDataStruct.decode(sock.getsockopt(SOL_MPTCP, MPTCP_TCPINFO, MptcpSubflowDataStruct.size()))
-        return subflow_data.num_subflows
+        # This operation can't be done in from python, requires struct
+        return _linux_get_nb_used_subflows(sock)
     
     # If it reaches here then the operation is not supported on the host OS
     raise NotImplementedError("The operation is not supported on your OS.")

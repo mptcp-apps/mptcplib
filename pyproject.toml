@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mptcplib"
+version = "0.1.2"
+authors = [
+  { name="Ingenzi Vany", email="ingenzivany@gmail.com" },
+]
+description = "A Multipath TCP python support library"
+readme = "README.md"
+requires-python = ">=3.5"
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: System :: Networking",
+    "Topic :: System :: Operating System Kernels :: Linux",
+    "Typing :: Typed",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: POSIX :: Linux"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/mptcp-apps/mptcplib"

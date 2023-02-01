@@ -5,7 +5,7 @@ import socket
 IPPROTO_MPTCP: int 
 __version__: str
 
-def socket_is_mptcp(sock: socket.socket) -> bool:
+def is_socket_mptcp(sock: socket.socket) -> bool:
     """Checks if the socket given in sock is a mptcp socket.
 
     :param sock: The python socket.
@@ -14,10 +14,10 @@ def socket_is_mptcp(sock: socket.socket) -> bool:
     :raises NotImplementedError: If the operation is not implemented on the host OS.
     :return: Boolean indicating if the socket is MPTCP
     :rtype: bool
-    """ 
+    """
     ...
 
-def used_subflows(sock: socket.socket) -> int:
+def get_nb_used_subflows(sock: socket.socket) -> int:
     """Returns the number of subflows used by the connection
 
     :param sock: The python socket.

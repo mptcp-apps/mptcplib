@@ -15,7 +15,7 @@ class MPTCPLibSocketCreation(unittest.TestCase):
     def test_initialisation_on_supported_os_ipv4(self):
         sock = mptcplib.create_mptcp_socket(socket.AF_INET, socket.SOCK_STREAM)
         try:    
-            self.assertTrue(mptcplib.socket_is_mptcp(sock))
+            self.assertTrue(mptcplib.is_socket_mptcp(sock))
         except NotImplementedError as error:
             pass
         self.assertEqual(sock.family, socket.AF_INET)
@@ -26,7 +26,7 @@ class MPTCPLibSocketCreation(unittest.TestCase):
     def test_initialisation_on_unsupported_os_ipv4(self):
         sock = mptcplib.create_mptcp_socket(socket.AF_INET, socket.SOCK_STREAM)
         try:    
-            self.assertFalse(mptcplib.socket_is_mptcp(sock))
+            self.assertFalse(mptcplib.is_socket_mptcp(sock))
         except NotImplementedError as error:
             pass
         # We fallback to TCP

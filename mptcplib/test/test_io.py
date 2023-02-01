@@ -21,8 +21,8 @@ class MPTCPLibDataTransfer(unittest.TestCase):
     def test_mptcp_transfer_ipv4(self):
         sock_client, sock_server = _client_server_pair(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            self.assertTrue(mptcplib.socket_is_mptcp(sock_client))
-            self.assertTrue(mptcplib.socket_is_mptcp(sock_server))
+            self.assertTrue(mptcplib.is_socket_mptcp(sock_client))
+            self.assertTrue(mptcplib.is_socket_mptcp(sock_server))
             sock_client.connect(sock_server.getsockname())
             text_length = 1024
             random_text = "".join(random.choice(string.ascii_letters) for _ in range(text_length))
@@ -32,8 +32,8 @@ class MPTCPLibDataTransfer(unittest.TestCase):
                 recv_text   = conn.recv(text_length).decode()
             self.assertEqual(random_text, recv_text)  
             try:
-                self.assertGreaterEqual(mptcplib.used_subflows(sock_client), 1) 
-                self.assertGreaterEqual(mptcplib.used_subflows(sock_server), 1)
+                self.assertGreaterEqual(mptcplib.get_nb_used_subflows(sock_client), 1) 
+                self.assertGreaterEqual(mptcplib.get_nb_used_subflows(sock_server), 1)
             except NotImplementedError as e:
                 pass 
         finally:
@@ -44,8 +44,8 @@ class MPTCPLibDataTransfer(unittest.TestCase):
     def test_mptcp_transfer_ipv6(self):
         sock_client, sock_server = _client_server_pair(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            self.assertTrue(mptcplib.socket_is_mptcp(sock_client))
-            self.assertTrue(mptcplib.socket_is_mptcp(sock_server))
+            self.assertTrue(mptcplib.is_socket_mptcp(sock_client))
+            self.assertTrue(mptcplib.is_socket_mptcp(sock_server))
             sock_client.connect(sock_server.getsockname())
             text_length = 1024
             random_text = "".join(random.choice(string.ascii_letters) for _ in range(text_length))
@@ -55,8 +55,8 @@ class MPTCPLibDataTransfer(unittest.TestCase):
                 recv_text   = conn.recv(text_length).decode()
             self.assertEqual(random_text, recv_text)    
             try:
-                self.assertGreaterEqual(mptcplib.used_subflows(sock_client), 1)
-                self.assertGreaterEqual(mptcplib.used_subflows(sock_server), 1)
+                self.assertGreaterEqual(mptcplib.get_nb_used_subflows(sock_client), 1)
+                self.assertGreaterEqual(mptcplib.get_nb_used_subflows(sock_server), 1)
             except NotImplementedError as e:
                 pass        
         finally:
