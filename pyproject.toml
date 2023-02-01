@@ -10,7 +10,7 @@ authors = [
 ]
 description = "A Multipath TCP python support library"
 readme = "README.md"
-requires-python = ">=3.5"
+requires-python = ">=3.7"
 classifiers = [
     "Development Status :: 1 - Planning",
     "License :: OSI Approved :: MIT License",
