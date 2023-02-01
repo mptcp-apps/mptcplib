@@ -7,18 +7,20 @@ import errno
 _os_supports_mptcp = True
 IS_LINUX = platform.startswith("linux") or platform == "linux2" 
 
-from ._common_utils import _linux_required_kernel, _linux_get_sysfs_variable
 from ._common_constants import *
-from ._mptcplib_linux import _linux_get_nb_used_subflows, SOL_MPTCP, MPTCP_INFO
+from ._mptcplib_linux import (
+    _linux_get_nb_used_subflows, 
+    SOL_MPTCP, MPTCP_INFO, 
+    _linux_required_kernel, 
+    _linux_get_sysfs_variable
+)
 
 def is_socket_mptcp(sock: socket.socket):
-    if IS_LINUX and _linux_required_kernel("5.16"):
+    if IS_LINUX and _linux_required_kernel("5.6"):
         if not _is_mptcp_enabled():
             return False
         try:
             _ = sock.getsockopt(SOL_MPTCP, MPTCP_INFO, 1)
-            # If no error occurs then it's MPTCP, not fan of using error handling as a execution flow
-            # but it's the current way to hande fallbacks to TCP.
             # c.f https://github.com/multipath-tcp/mptcp_net-next/issues/294#issuecomment-1301920288 */
             return True 
         except OSError as error:

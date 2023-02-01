@@ -6,7 +6,7 @@ from ._interface import (
     IPPROTO_MPTCP
 )
     
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 __all__ = [
     "is_socket_mptcp", 

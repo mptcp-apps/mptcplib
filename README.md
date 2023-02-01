@@ -27,14 +27,14 @@ Below you see an example of a typical socket script :
 import mptcplib
 import socket 
 
-socket = mptcplib.create_mptcp_socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+sock = mptcplib.create_mptcp_socket(socket.AF_INET, socket.SOCK_STREAM):
 # Do things ...
-if mptcplib.is_socket_mptcp(socket):
+if mptcplib.is_socket_mptcp(sock):
     # Do things in case of an MPTCP socket
-    used_subflows = mptcplib.
+    used_subflows = mptcplib.get_nb_used_subflows(sock)
 else:
     # Handle fallback to standard TCP socket
-socket.close()
+sock.close()
 
 ```
  
