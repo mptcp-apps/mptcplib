@@ -21,6 +21,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install package in dev mode and pytest
         run: |
+          sudo sysctl -w net.mptcp.enabled=1
           make dev-install
           pip install pytest
     

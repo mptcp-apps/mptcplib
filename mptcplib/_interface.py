@@ -60,7 +60,7 @@ def _is_mptcp_supported():
         return False
 
     if IS_LINUX and _linux_required_kernel("5.6"):
-        return _is_mptcp_enabled()
+        return True
 
     # If reaches here then host OS doesn't support MPTCP
     _os_supports_mptcp = False

@@ -53,7 +53,7 @@ class MPTCPLibDataTransfer(unittest.TestCase):
             conn, _ = sock_server.accept()
             with conn:
                 recv_text   = conn.recv(text_length).decode()
-            self.assertEqual(random_text, recv_text)    
+            self.assertEqual(random_text, recv_text)
             try:
                 self.assertGreaterEqual(mptcplib.get_nb_used_subflows(sock_client), 1)
                 self.assertGreaterEqual(mptcplib.get_nb_used_subflows(sock_server), 1)
