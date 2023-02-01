@@ -2,8 +2,11 @@ import socket
 import ctypes
 import os
 import subprocess
+from sys import platform
+import errno
 
 from ._common_constants import *
+IS_LINUX = platform.startswith("linux")
 
 try:
     SOL_MPTCP = socket.SOL_MPTCP
@@ -52,16 +55,40 @@ try:
 except (ImportError, TypeError, AttributeError):
     getsockopt = None
 
-def _linux_get_nb_used_subflows(sock: socket.socket) -> int:
+def _linux_is_mptcp_enabled():
+    return _linux_get_sysfs_variable("net.mptcp.enabled") == "1"
+
+
+def _linux_is_socket_mptcp(sock: socket.socket):
+    # c.f https://github.com/multipath-tcp/mptcp_net-next/issues/294#issuecomment-1301920288 */
+    if not _linux_required_kernel("5.6"):
+        return False
+    if not _linux_is_mptcp_enabled():
+        return False
     if getsockopt == None:
-        raise NotImplementedError("The operation is not supported on your OS.")
+        raise NotImplementedError("The operation not supported on Host OS.")
+    optval = ctypes.c_bool()
+    optlen = socklen_t(ctypes.sizeof(ctypes.c_bool))
+    if getsockopt( sock.fileno(), SOL_MPTCP, MPTCP_INFO, ctypes.byref(optval), ctypes.byref(optlen)) == -1:
+        err_no = ctypes.get_errno()
+        if err_no == errno.EOPNOTSUPP:
+            return False
+        raise OSError(errno, os.strerror(errno))
+    return True
+
+def _linux_get_nb_used_subflows(sock: socket.socket) -> int:
+    if not _linux_required_kernel("5.16") or getsockopt == None:
+        raise NotImplementedError("The operation requires a kernel >= 5.16")
+    if not _linux_is_socket_mptcp(sock):
+        return -1
     optval = mptcp_subflow_data()
     optlen = socklen_t(ctypes.sizeof(optval))
-    if getsockopt(  sock.fileno(), SOL_MPTCP, 2, 
+    if getsockopt(  sock.fileno(), SOL_MPTCP, MPTCP_TCPINFO, 
                     ctypes.byref(optval), ctypes.byref(optlen)) == -1:
-        errno = ctypes.get_errno()
-        raise OSError(errno, os.strerror(errno))
+        err_no = ctypes.get_errno()
+        raise OSError(err_no, os.strerror(err_no))
     return optval.num_subflows
+
 
 def _get_linux_kernel_version():
     cmd_result, _ = subprocess.Popen(["uname", "-r"], stdout=subprocess.PIPE, stderr=None).communicate()
@@ -78,6 +105,9 @@ def _linux_compare_kernel_version(this_version, other_version):
         elif this_to_number > other_to_number:
             return 1
     return 0
+
+def _linux_is_mptcp_supported():
+    return _linux_required_kernel("5.6")
 
 def _linux_required_kernel(expected_release):
     return _linux_compare_kernel_version(_get_linux_kernel_version(), expected_release) >= 0

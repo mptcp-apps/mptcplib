@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
 
 jobs:
   build:
@@ -22,6 +23,7 @@ jobs:
       - name: Install package in dev mode and pytest
         run: |
           sudo sysctl -w net.mptcp.enabled=1
+          uname -r
           make dev-install
           pip install pytest
     
