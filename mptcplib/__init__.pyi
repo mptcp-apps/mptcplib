@@ -5,26 +5,25 @@ import socket
 IPPROTO_MPTCP: int 
 __version__: str
 
-def socket_is_mptcp(fd: int) -> bool:
-    """Checks if the socket identified by the given file descriptor is a 
-    MPTCP socket.
+def is_socket_mptcp(sock: socket.socket) -> bool:
+    """Checks if the socket given in sock is a mptcp socket.
 
-    :param fd: File descriptor of the socket.
-    :type fd: int
+    :param sock: The python socket.
+    :type sock: socket.socket
     :raises mptcplib.error: If the file descriptor is less or equal to zero or an error occured.
-    :raises NotImplementedError: If the operation is not supported on the host OS.
+    :raises NotImplementedError: If the operation is not implemented on the host OS.
     :return: Boolean indicating if the socket is MPTCP
     :rtype: bool
-    """ 
+    """
     ...
 
-def used_subflows(fd: int) -> int:
+def get_nb_used_subflows(sock: socket.socket) -> int:
     """Returns the number of subflows used by the connection
 
-    :param fd: File descriptor of a MPTCP socket
-    :type fd: int
+    :param sock: The python socket.
+    :type sock: socket.socket
     :raises mptcplib.error: Indicating the errno code.
-    :raises NotImplementedError: If the operation is not supported on the host OS.
+    :raises NotImplementedError: If the operation is not implemented on the host OS.
     :return: -1 if fallback to TCP, else the number of used subflows.
     :rtype: int
     """

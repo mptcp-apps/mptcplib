@@ -3,7 +3,9 @@
 ![tests](https://github.com/mptcp-apps/mptcplib/actions/workflows/tests.yaml/badge.svg)
 
 ## About
-A Multipath TCP Python extension module. The core of this library is written in C in order to provide support for Multipath TCP in Python faster than standard CPython. For a deeper read about Multipath TCP, please consult this [webpage](https://obonaventure.github.io/mmtp-book/).
+A Multipath TCP Python library. We encourage users to actovate notifications since the library is still in it's early stages and the API may change. For certain functions are are availabke starting from a certain kernel release we encourage the user's to check the kernel implementation [changelog](https://github.com/multipath-tcp/mptcp_net-next/wiki#changelog).
+
+For a deeper read about Multipath TCP, please consult this [webpage](https://obonaventure.github.io/mmtp-book/).
 
 ## Table of content
 
@@ -20,20 +22,23 @@ To be able to use the library we encourage to install using [PyPi](https://pypi.
 pip install mptcplib
 ```
  
-In order to check if a socket is still a MPTCP socket, you can use the following example :
- 
-```py
+Below you see an example of a typical socket script :
+```Python
 import mptcplib
+import socket 
 
-with mptcplib.create_mptcp_socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    ... # Do other things
-    if mptcplib.socket_is_mptcp(sock.fileno()):
-        ... # Do things for MPTCP socket
-    else:
-        ... # Falled back to TCP
+socket = mptcplib.create_mptcp_socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+# Do things ...
+if mptcplib.is_socket_mptcp(socket):
+    # Do things in case of an MPTCP socket
+    used_subflows = mptcplib.
+else:
+    # Handle fallback to standard TCP socket
+socket.close()
+
 ```
  
-There are other useful functions such as getting the number of subflows used by a MPTCP connection, check if the os supports MPTCP and that it is enabled, etc. We intend to make a Sphinx doccumentation website available soon.
+There are other useful functions check if the os supports MPTCP and that it is enabled. We intend to add more kernel supported functions available. 
 
 ## Description
 ---

@@ -28,7 +28,7 @@ clean:
 
 #-------------- Dev mode
 dev:
-	$(PYTHON) -m pip install -q --upgrade twine setuptools
+	$(PYTHON) -m pip install -q --upgrade twine build
 
 dev-install:
 	$(PYTHON) -m pip install -e . --user
@@ -38,11 +38,11 @@ dev-uninstall:
 	$(PYTHON) scripts/internal/purge_installation.py
 
 dev-build:
-	$(PYTHON) setup.py build
+	$(PYTHON) -m build
 
 test:
 	pip3 install -q pytest
-	pytest ./mptcplib/test/ -v
+	pytest ./mptcplib/test/ -v -s
 
 test-coverage:
 	pip3 install -q pytest-cov pytest-xdist
@@ -50,8 +50,8 @@ test-coverage:
 
 #-------------- Distribution
 pre-release: clean dev
-	$(PYTHON) setup.py sdist
+	$(PYTHON) -m build
+	$(PYTHON) -m twine check --strict dist/*
  
 release: pre-release
-	$(PYTHON) -m twine check --strict dist/*
 	$(PYTHON) -m twine upload dist/*
