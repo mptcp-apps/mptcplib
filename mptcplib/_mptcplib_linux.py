@@ -55,9 +55,15 @@ try:
 except (ImportError, TypeError, AttributeError):
     getsockopt = None
 
+def _linux_get_sysfs_variable(variable):
+    cmd_result, _ = subprocess.Popen(["sysctl", variable], stdout=subprocess.PIPE, stderr=None).communicate()
+    return cmd_result.decode('utf-8').split("=")[1].strip()
+
 def _linux_is_mptcp_enabled():
     return _linux_get_sysfs_variable("net.mptcp.enabled") == "1"
 
+def _linux_required_kernel(expected_release):
+    return _linux_compare_kernel_version(_get_linux_kernel_version(), expected_release) >= 0
 
 def _linux_is_socket_mptcp(sock: socket.socket):
     # c.f https://github.com/multipath-tcp/mptcp_net-next/issues/294#issuecomment-1301920288 */
@@ -69,11 +75,12 @@ def _linux_is_socket_mptcp(sock: socket.socket):
         raise NotImplementedError("The operation not supported on Host OS.")
     optval = ctypes.c_bool()
     optlen = socklen_t(ctypes.sizeof(ctypes.c_bool))
-    if getsockopt( sock.fileno(), SOL_MPTCP, MPTCP_INFO, ctypes.byref(optval), ctypes.byref(optlen)) == -1:
+    if getsockopt(  sock.fileno(), SOL_MPTCP, MPTCP_INFO, 
+                    ctypes.byref(optval), ctypes.byref(optlen) ) == -1:
         err_no = ctypes.get_errno()
         if err_no == errno.EOPNOTSUPP:
             return False
-        raise OSError(errno, os.strerror(errno))
+        raise OSError( err_no, os.strerror(err_no) )
     return True
 
 def _linux_get_nb_used_subflows(sock: socket.socket) -> int:
@@ -86,9 +93,8 @@ def _linux_get_nb_used_subflows(sock: socket.socket) -> int:
     if getsockopt(  sock.fileno(), SOL_MPTCP, MPTCP_TCPINFO, 
                     ctypes.byref(optval), ctypes.byref(optlen)) == -1:
         err_no = ctypes.get_errno()
-        raise OSError(err_no, os.strerror(err_no))
+        raise OSError( err_no, os.strerror(err_no) )
     return optval.num_subflows
-
 
 def _get_linux_kernel_version():
     cmd_result, _ = subprocess.Popen(["uname", "-r"], stdout=subprocess.PIPE, stderr=None).communicate()
@@ -98,20 +104,18 @@ def _linux_compare_kernel_version(this_version, other_version):
     this_to_array, other_to_array = this_version.split('.')[:2], other_version.split('.')[:2]
     min_length = min(len(this_to_array), len(other_to_array))
     for idx in range(min_length):
-        this_to_number = int(this_to_array[idx])
+        this_to_number  = int(this_to_array[idx])
         other_to_number = int(other_to_array[idx])
-        if  this_to_number < other_to_number:
+        if   this_to_number < other_to_number:
             return -1
         elif this_to_number > other_to_number:
             return 1
     return 0
 
+def _linux_is_kernel_module_installed(module_name):
+    lsmod_proc = subprocess.Popen(["modinfo", module_name], stdout=subprocess.PIPE, stderr=None)
+    lsmod_proc.communicate()
+    return lsmod_proc.returncode == 0
+
 def _linux_is_mptcp_supported():
-    return _linux_required_kernel("5.6")
-
-def _linux_required_kernel(expected_release):
-    return _linux_compare_kernel_version(_get_linux_kernel_version(), expected_release) >= 0
-
-def _linux_get_sysfs_variable(variable):
-    cmd_result, _ = subprocess.Popen(["sysctl", variable], stdout=subprocess.PIPE, stderr=None).communicate()
-    return cmd_result.decode('utf-8').split("=")[1].strip()
+    return _linux_required_kernel("5.6") and _linux_is_kernel_module_installed("mptcp_diag")

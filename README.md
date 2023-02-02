@@ -47,10 +47,8 @@ The library is currently supported on Linux kernels but the goal will be to exte
 
 | Operating System | mptcplib support | 
 | ----------- | :-----------: |
+| Linux based (kernel >= 5.6) | Yes | 
 | MacOS (Big Sur, Ventura) | Not yet |
-| Ubuntu (>= 22.04) | Yes |
-| CentOS | TBA |
-| Debain | TBA |
 
 ## Contributing
 ---

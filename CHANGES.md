@@ -3,6 +3,7 @@
 - Moved package distribution from source distribution to wheels.
 - Changed the API of the library to take the socket object instead of jus the file descriptor.
 - Refactoring and error fixing.
+- Added check to see if MPTCP module is present.
 
 # Version 0.1.2 - Date : December 15, 2022
 - Fixing errors.
